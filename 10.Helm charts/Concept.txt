@@ -1,0 +1,83 @@
+Helm : -its a package manager for k8s
+       -It provides an easy way to define, install, and upgrade Kubernetes applications and services.
+    so,
+    Helm chart ?
+        -Helm allows you to package all the necessary components of an application, including containers,
+         dependencies, and configuration files, into a single package called a chart.
+        -A chart is a collection of YAML templates that define Kubernetes resources such as pods,
+         services, and deployments.
+        -Helm uses these templates to create Kubernetes objects and manage the lifecycle of the application
+        
+Helm3 architecture
+        -Helm client: The Helm client is a command-line interface (CLI) that allows you to interact with charts 
+            and Kubernetes clusters. The client interacts with the Kubernetes API server to install, upgrade, and delete charts.
+        -Chart: A chart is a package that contains all the necessary files to deploy an application in Kubernetes. Charts include 
+            templates, YAML files, and values that describe the application's resources and configurations.
+        -Release: A release is an instance of a chart that is deployed to a Kubernetes cluster. A release includes a unique name, 
+            version, and configuration.
+        -Helm library: The Helm library includes core components and interfaces for managing charts and releases. 
+            The library is responsible for loading, validating, and rendering charts, as well as managing releases and their lifecycles.
+        -Kubernetes API server: The Kubernetes API server is a core component of Kubernetes that provides a RESTful API for managing Kubernetes resources.
+
+        ** Tiller (removed in Helm 3): Tiller was a server-side component in Helm 2 that managed chart installations, upgrades, and deletions. In Helm 3, Tiller has been removed, and all the functionality is now handled by the Helm client.
+
+folder structure
+    mychart
+        |-- Chart.yaml                |--->metadata about the chart in yaml format. 
+        |-- charts                    |--->chart dependencies can be placed in this directory.
+        |-- templates                 |--->contains all the manifest files or templates.
+            |   |-- NOTES.txt         |--->it shows information of the chart in console.
+            |   |-- _helpers.tpl      |--->it will reduce duplicate lines in yaml files like labels in multiple lines.
+            |   |-- deployment.yaml
+            |   |-- ingress.yaml
+            |   `-- service.yaml
+        |-- values.yaml               |--->Default configuration values for the chart in yaml format.
+
+        test-connection.yaml : Before deploying the actual thing to k8s cluster,this file do like kind of testing.
+
+how to download Dependency
+    # Chart.yaml
+        dependencies:
+            - name: nginx
+            version: "1.2.3"
+            repository: "https://example.com/charts"
+    Then
+        -helm dependency build
+        -helm install my-release . --dry-run
+        -kubectl get pods
+        -kubectl describe pod <pod_name>
+
+Upgrade the version and rollback
+    #make changes in chart.yml file i.e version numbers
+        -helm upgrade --install my-release .
+        -helm history my-release
+        -helm rollback 1
+
+how to share the hem charts to other teams or pipeline
+    package
+        -helm package <myapp>
+        -helm push myapp.tgz <private_repo_URL>
+    then ask other team to pull the package
+        -helm pull <private_repo_URL>
+
+helm lint : is the command to validate the syntax mistakes in our charts.
+pull policy:
+            -always
+            -IfNotpresent
+Named templates:
+
+Default functions
+    -required:
+    -quote:
+    -include:
+    -nindent:
+    -uppercase:
+    -lowercase:
+
+Flow controls
+    -If-else:
+    -range:
+    -with:
+
+promotheus and grafana
+    -installing promatheus and grafana
